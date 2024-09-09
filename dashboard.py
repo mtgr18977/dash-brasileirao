@@ -4,7 +4,7 @@ from collections import defaultdict
 import os
 
 def verificar_colunas(df):
-    colunas_esperadas = ['rodada', 'mandante', 'visitante', 'formacao_mandante', 'formacao_visitante', 'tecnico_mandante', 'tecnico_visitante', 'vencedor']
+    colunas_esperadas = ['rodata', 'mandante', 'visitante', 'formacao_mandante', 'formacao_visitante', 'tecnico_mandante', 'tecnico_visitante', 'vencedor']
     colunas_faltantes = [col for col in colunas_esperadas if col not in df.columns]
     return colunas_faltantes
 
