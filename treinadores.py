@@ -1,7 +1,5 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 from collections import defaultdict
 import os
 
@@ -43,13 +41,6 @@ def analisar_formacoes(df):
     formacoes_visitante = df['formacao_visitante'].value_counts()
     return formacoes_mandante, formacoes_visitante
 
-def criar_grafico_pizza(dados, titulo):
-    fig, ax = plt.subplots()
-    ax.pie(dados.values, labels=dados.index, autopct='%1.1f%%', startangle=90)
-    ax.axis('equal')
-    plt.title(titulo)
-    return fig
-
 st.set_page_config(page_title="Dashboard de Treinadores e Formações", layout="wide")
 st.title("Análise de Treinadores e Formações do Campeonato Brasileiro")
 
@@ -78,14 +69,12 @@ if df is not None:
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("Formações Mandante")
-        fig_mandante = criar_grafico_pizza(formacoes_mandante.head(5), "Top 5 Formações Mandante")
-        st.pyplot(fig_mandante)
+        st.subheader("Top 5 Formações Mandante")
+        st.bar_chart(formacoes_mandante.head(5))
 
     with col2:
-        st.subheader("Formações Visitante")
-        fig_visitante = criar_grafico_pizza(formacoes_visitante.head(5), "Top 5 Formações Visitante")
-        st.pyplot(fig_visitante)
+        st.subheader("Top 5 Formações Visitante")
+        st.bar_chart(formacoes_visitante.head(5))
 
     st.header("Comparação de Formações")
     formacoes_df = pd.DataFrame({
@@ -93,14 +82,7 @@ if df is not None:
         'Visitante': formacoes_visitante
     }).fillna(0)
 
-    fig, ax = plt.subplots(figsize=(12, 8))
-    formacoes_df.plot(kind='bar', ax=ax)
-    plt.title("Comparação de Formações: Mandante vs Visitante")
-    plt.xlabel("Formações")
-    plt.ylabel("Número de Ocorrências")
-    plt.xticks(rotation=45, ha='right')
-    plt.legend(["Mandante", "Visitante"])
-    st.pyplot(fig)
+    st.bar_chart(formacoes_df)
 
 else:
     st.error("Não foi possível carregar os dados. Por favor, verifique o arquivo CSV.")
