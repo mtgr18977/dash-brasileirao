@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from collections import defaultdict
+import os
 
 def verificar_colunas(df):
     colunas_esperadas = ['rodada', 'mandante', 'visitante', 'formacao_mandante', 'formacao_visitante', 'tecnico_mandante', 'tecnico_visitante', 'vencedor']
@@ -48,22 +49,26 @@ def processar_csv(df):
 
     return estatisticas
 
-st.set_page_config(page_title="Dashboard de Futebol", layout="wide")
+st.set_page_config(page_title="Dashboard do Campeonato Brasileiro", layout="wide")
 
-st.title("Dashboard de Estatísticas de Futebol")
+st.title("Dashboard de Estatísticas do Campeonato Brasileiro")
 
-uploaded_file = st.file_uploader("Escolha o arquivo CSV", type="csv")
+# Caminho para o arquivo CSV
+arquivo_csv = "campeonato-brasileiro-full.csv"
 
-if uploaded_file is not None:
+# Verificar se o arquivo existe
+if not os.path.exists(arquivo_csv):
+    st.error(f"O arquivo '{arquivo_csv}' não foi encontrado no diretório do script.")
+else:
     try:
-        df = pd.read_csv(uploaded_file, delimiter='\t')
+        df = pd.read_csv(arquivo_csv, delimiter=',')  # Assumindo que o delimitador é uma vírgula
         
         colunas_faltantes = verificar_colunas(df)
         if colunas_faltantes:
             st.error(f"As seguintes colunas estão faltando no arquivo CSV: {', '.join(colunas_faltantes)}")
         else:
             st.subheader("Visão Geral dos Dados")
-            st.write(df)
+            st.write(df.head())  # Mostra apenas as primeiras linhas para não sobrecarregar a interface
 
             estatisticas = processar_csv(df)
             
@@ -101,6 +106,3 @@ if uploaded_file is not None:
         st.error("Erro ao analisar o arquivo CSV. Verifique se o formato está correto.")
     except Exception as e:
         st.error(f"Ocorreu um erro inesperado: {str(e)}")
-
-else:
-    st.info("Por favor, faça o upload de um arquivo CSV para começar.")
